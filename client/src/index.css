@@ -1,0 +1,113 @@
+/* Petal Instrument Panel: pearl-and-pastel glass lenses, tactile shadows, editorial contrast, and zero neon. */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --primary: #557eb3;
+  --primary-foreground: #f7faff;
+  --radius: 0.75rem;
+  --background: #f4f1f4;
+  --foreground: #27313f;
+  --card: #ffffff;
+  --card-foreground: #27313f;
+  --popover: #ffffff;
+  --popover-foreground: #27313f;
+  --secondary: #ece9f1;
+  --secondary-foreground: #4e5969;
+  --muted: #eceaf0;
+  --muted-foreground: #6f7786;
+  --accent: #e8eff8;
+  --accent-foreground: #27313f;
+  --destructive: #d96060;
+  --destructive-foreground: #fff;
+  --border: #dfe1e8;
+  --input: #dfe1e8;
+  --ring: #7da7d8;
+}
+
+.dark {
+  --primary: #a5c4ed;
+  --primary-foreground: #141925;
+  --background: #191d2a;
+  --foreground: #eef2f7;
+  --card: #232837;
+  --card-foreground: #eef2f7;
+  --popover: #232837;
+  --popover-foreground: #eef2f7;
+  --secondary: #2c3142;
+  --secondary-foreground: #d6dce7;
+  --muted: #303647;
+  --muted-foreground: #aeb7c8;
+  --accent: #303647;
+  --accent-foreground: #f3f6fb;
+  --destructive: #f08f8a;
+  --destructive-foreground: #1b1d29;
+  --border: #3a4154;
+  --input: #3a4154;
+  --ring: #a5c4ed;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; font-family: "Manrope", sans-serif; }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), [type="reset"]:not(:disabled), a[href], select:not(:disabled), input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled) { @apply cursor-pointer; }
+}
+
+@layer components {
+  .atlas-shell {
+    min-height: 100vh;
+    background: radial-gradient(circle at 8% 7%, color-mix(in srgb, var(--brand) 18%, transparent), transparent 28rem), radial-gradient(circle at 93% 11%, rgba(232, 177, 204, 0.24), transparent 27rem), var(--background);
+    transition: background 240ms var(--ease-out), color 200ms var(--ease-out);
+  }
+  .atlas-shell::before { background-image: linear-gradient(rgba(255,255,255,0.20) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px); background-size: 38px 38px; content: ""; inset: 0; opacity: 0.42; pointer-events: none; position: fixed; z-index: 0; }
+  .dark .atlas-shell::before { opacity: 0.09; }
+  .display-face { font-family: "DM Serif Display", Georgia, serif; }
+  .glass-card { background: color-mix(in srgb, var(--card) 73%, transparent); border: 1px solid color-mix(in srgb, #fff 64%, var(--brand)); box-shadow: 15px 16px 32px rgba(68, 70, 100, 0.10), inset 1px 1px 0 rgba(255,255,255,0.82), inset -1px -1px 0 rgba(111, 117, 145, 0.06); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+  .dark .glass-card { background: rgba(35, 40, 55, 0.78); border-color: rgba(219,229,244,0.16); box-shadow: 16px 18px 34px rgba(0, 0, 0, 0.24), inset 1px 1px 0 rgba(255,255,255,0.08), inset -1px -1px 0 rgba(0,0,0,0.14); }
+  .inset-well { background: color-mix(in srgb, var(--background) 84%, var(--brand)); box-shadow: inset 5px 5px 11px rgba(80, 90, 111, 0.12), inset -5px -5px 10px rgba(255,255,255,0.82); }
+  .dark .inset-well { box-shadow: inset 5px 5px 12px rgba(0,0,0,0.24), inset -3px -3px 8px rgba(255,255,255,0.04); }
+  .brand-seal { background: radial-gradient(circle at 34% 24%, #fff 0 14%, color-mix(in srgb, var(--brand) 24%, #fff) 36%, rgba(255,255,255,.68) 74%); box-shadow: 0 5px 12px color-mix(in srgb, var(--brand) 22%, transparent), inset 1px 1px 0 rgba(255,255,255,.96), inset -2px -2px 4px rgba(57,73,105,.13); position: relative; }
+  .brand-seal::after { border: 1px solid color-mix(in srgb, var(--brand) 45%, white); border-radius: inherit; content: ""; inset: 3px; pointer-events: none; position: absolute; }
+  .petal-grid { isolation: isolate; overflow: hidden; position: relative; }
+  .petal-grid::before { background-image: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand) 24%, transparent) 0 2px, transparent 3px), radial-gradient(circle at 100% 0%, transparent 0 18px, color-mix(in srgb, var(--brand) 10%, transparent) 19px 20px, transparent 21px), linear-gradient(135deg, transparent 47%, color-mix(in srgb, var(--brand) 13%, transparent) 48% 49%, transparent 50%); background-position: right 22px top 20px, right 6px top 4px, right 0 top 0; background-repeat: repeat; background-size: 26px 26px, 46px 46px, 30px 30px; content: ""; height: 128px; opacity: .62; pointer-events: none; position: absolute; right: 0; top: 0; width: 160px; z-index: -1; }
+  .dark .petal-grid::before { opacity: .32; }
+  .data-lens { background: color-mix(in srgb, var(--brand-soft) 58%, white); box-shadow: inset 2px 2px 4px rgba(255,255,255,.9), inset -3px -3px 7px color-mix(in srgb, var(--brand) 8%, transparent), 0 6px 14px rgba(68,70,100,.05); }
+  .dark .data-lens { background: rgba(255,255,255,.06); box-shadow: inset 2px 2px 5px rgba(255,255,255,.06), inset -3px -3px 8px rgba(0,0,0,.15); }
+  .tactile-button { box-shadow: 0 8px 18px color-mix(in srgb, var(--brand) 24%, transparent), inset 0 1px 0 rgba(255,255,255,0.45); transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out), filter 160ms var(--ease-out); }
+  .tactile-button:hover { filter: saturate(1.12) brightness(1.02); transform: translateY(-2px); }
+  .tactile-button:active { transform: scale(0.97) translateY(0); box-shadow: 0 3px 8px color-mix(in srgb, var(--brand) 18%, transparent); }
+  .float-in { animation: float-in 560ms var(--ease-out) both; }
+  .delay-1 { animation-delay: 70ms; }
+  .delay-2 { animation-delay: 135ms; }
+  .delay-3 { animation-delay: 200ms; }
+  @keyframes float-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .float-in { animation: none; } *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }
+}
