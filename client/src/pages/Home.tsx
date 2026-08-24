@@ -12,6 +12,8 @@ type PracticeScenario = {
   explanation: string;
 };
 
+type PracticeMode = "judgment" | "blueprint";
+
 const contexts: Array<{ id: ContextId; label: string; threshold: number }> = [
   { id: "email", label: "Email", threshold: 70 },
   { id: "device", label: "Device", threshold: 78 },
@@ -56,6 +58,30 @@ export const practiceScenarios: PracticeScenario[] = [
     options: ["Use a password-manager-generated passphrase", "Add a year to an old password", "Choose a familiar word with an exclamation mark"],
     answer: 0,
     explanation: "A password manager can create and store a long, unique password. Multi-factor authentication adds another useful layer when available.",
+  },
+];
+
+export const passphraseBlueprints: PracticeScenario[] = [
+  {
+    prompt: "Choose the starting material for a new password you want to remember.",
+    detail: "The aim is length and uniqueness, not a clever modification of an old secret.",
+    options: ["Three unrelated words", "Your name and birth year", "An old password with one new symbol"],
+    answer: 0,
+    explanation: "Several unrelated words can create length without relying on personal facts or a reused password pattern.",
+  },
+  {
+    prompt: "Choose how the words should be kept for future use.",
+    detail: "A strong password is most useful when it is unique for this one account.",
+    options: ["Store it in a trusted password manager", "Reuse it for similar accounts", "Save it in a public note"],
+    answer: 0,
+    explanation: "A password manager makes unique passwords practical. Reuse can turn one service breach into a larger account problem.",
+  },
+  {
+    prompt: "Choose the extra protection to add when the service offers it.",
+    detail: "This choice should not require sharing the password with anyone.",
+    options: ["Turn on multi-factor authentication", "Share the password with a teammate", "Keep a recovery code in a chat"],
+    answer: 0,
+    explanation: "Multi-factor authentication adds a separate verification step. Recovery codes should stay private and offline where possible.",
   },
 ];
 
@@ -125,13 +151,19 @@ export default function Home() {
   const [context, setContext] = useState<ContextId>("email");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "unavailable">("idle");
   const [commandView, setCommandView] = useState<CommandView>("inspect");
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>("judgment");
   const [practiceIndex, setPracticeIndex] = useState(0);
   const [practiceChoice, setPracticeChoice] = useState<number | null>(null);
+  const [blueprintIndex, setBlueprintIndex] = useState(0);
+  const [blueprintChoice, setBlueprintChoice] = useState<number | null>(null);
   const result = useMemo(() => analysePassword(password), [password]);
   const activeContext = contexts.find(item => item.id === context) ?? contexts[0];
   const activePractice = practiceScenarios[practiceIndex];
   const practiceComplete = practiceChoice !== null;
   const practiceCorrect = practiceChoice === activePractice.answer;
+  const activeBlueprint = passphraseBlueprints[blueprintIndex];
+  const blueprintComplete = blueprintChoice !== null;
+  const blueprintCorrect = blueprintChoice === activeBlueprint.answer;
   const hasPassword = password.length > 0;
   const tone = scoreTone(result.score);
   const filledSegments = Math.ceil(result.score / 10);
@@ -345,11 +377,15 @@ export default function Home() {
 
         <section id="practice" className="practice-section" aria-labelledby="practice-title">
           <div className="practice-heading">
-            <p className="eyebrow">Security judgment drill</p>
+            <p className="eyebrow">Practice lab</p>
             <h2 id="practice-title">Practice the decision, not a real password.</h2>
-            <p>Three small situations. No sign-in, no score history, and no personal information required.</p>
+            <p>Short exercises for building better security instincts. No sign-in, score history, or personal information required.</p>
+            <div className="practice-switch" role="tablist" aria-label="Practice exercises">
+              <button type="button" role="tab" aria-selected={practiceMode === "judgment"} className={practiceMode === "judgment" ? "is-active" : ""} onClick={() => setPracticeMode("judgment")}>Judgment drill</button>
+              <button type="button" role="tab" aria-selected={practiceMode === "blueprint"} className={practiceMode === "blueprint" ? "is-active" : ""} onClick={() => setPracticeMode("blueprint")}>Passphrase blueprint</button>
+            </div>
           </div>
-          <div className="practice-sheet">
+          {practiceMode === "judgment" ? <div className={`practice-sheet ${practiceComplete ? "is-resolved" : ""} ${practiceCorrect ? "is-correct" : "is-incorrect"}`}>
             <div className="practice-sheet-head">
               <span>Scenario {String(practiceIndex + 1).padStart(2, "0")} / {String(practiceScenarios.length).padStart(2, "0")}</span>
               <span>{practiceComplete ? (practiceCorrect ? "Good call" : "Try the reasoning") : "Choose a next move"}</span>
@@ -362,7 +398,7 @@ export default function Home() {
                 return (
                   <button
                     type="button"
-                    className={state}
+                    className={`practice-option ${state}`}
                     key={option}
                     onClick={() => setPracticeChoice(index)}
                     aria-pressed={practiceChoice === index}
@@ -386,7 +422,26 @@ export default function Home() {
                 {practiceIndex === practiceScenarios.length - 1 ? "Restart drill" : "Next scenario"}
               </button>
             </div>
-          </div>
+          </div> : <div className={`practice-sheet blueprint-sheet ${blueprintComplete ? "is-resolved" : ""} ${blueprintCorrect ? "is-correct" : "is-incorrect"}`}>
+            <div className="practice-sheet-head">
+              <span>Build step {String(blueprintIndex + 1).padStart(2, "0")} / {String(passphraseBlueprints.length).padStart(2, "0")}</span>
+              <span>{blueprintComplete ? (blueprintCorrect ? "Blueprint improved" : "Reconsider the boundary") : "Choose a safer component"}</span>
+            </div>
+            <p className="practice-prompt">{activeBlueprint.prompt}</p>
+            <p className="practice-detail">{activeBlueprint.detail}</p>
+            <div className="practice-options" role="group" aria-label="Choose the safer passphrase practice step">
+              {activeBlueprint.options.map((option, index) => {
+                const state = !blueprintComplete ? "" : index === activeBlueprint.answer ? "is-correct" : index === blueprintChoice ? "is-incorrect" : "";
+                return <button type="button" className={`practice-option ${state}`} key={option} onClick={() => setBlueprintChoice(index)} aria-pressed={blueprintChoice === index}><span>{String.fromCharCode(65 + index)}</span>{option}</button>;
+              })}
+            </div>
+            <div className="practice-feedback" aria-live="polite">
+              {blueprintComplete ? <p>{activeBlueprint.explanation}</p> : <p>Pick the step that improves security without using personal facts or exposing a credential.</p>}
+              <button type="button" className="plain-button" disabled={!blueprintComplete} onClick={() => { setBlueprintIndex(index => (index + 1) % passphraseBlueprints.length); setBlueprintChoice(null); }}>
+                {blueprintIndex === passphraseBlueprints.length - 1 ? "Restart blueprint" : "Next step"}
+              </button>
+            </div>
+          </div>}
         </section>
 
         <section id="method" className="method-section" aria-labelledby="method-title">

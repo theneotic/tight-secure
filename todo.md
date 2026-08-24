@@ -20,3 +20,8 @@
 - [x] Commit and deploy the approved visual enhancement together with the expanded website structure under the user’s GitHub identity; Vercel client asset verified after deployment.
 - [x] Add a privacy-safe interactive engagement feature that helps visitors practice password-security judgment without entering real personal data.
 - [x] Review the current live Vercel design and validate the new engagement feature across desktop and mobile layouts.
+- [x] Add a second privacy-safe interactive Practice mini-assessment that teaches password-security judgment without collecting user data.
+- [x] Refine Security Judgment Drill feedback states and restrained motion while preserving reduced-motion support.
+- [x] Run and document a comprehensive live performance and accessibility audit for the Tight Secure Vercel site; findings recorded in `docs/performance-accessibility-audit-2026-08-24.md`.
+- [x] Remove the unresolved analytics placeholder request identified by the live audit and preserve the site’s local-only privacy boundary.
+- [ ] Verify that the zoom and contrast remediations eliminate the live audit’s accessibility failures after deployment.

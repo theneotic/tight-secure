@@ -6,7 +6,7 @@
   --paper: #f2efe8;
   --paper-deep: #e7e1d5;
   --ink: #191a18;
-  --muted: #66665e;
+  --muted: #5b5c54;
   --line: #c9c3b7;
   --line-strong: #858074;
   --accent: #a9432c;
@@ -295,7 +295,7 @@ h2 {
 .signal-pins li { display: grid; grid-template-columns: 30px 1fr; gap: 8px; border-top: 1px solid color-mix(in srgb, var(--paper) 24%, transparent); padding: 8px 0; color: color-mix(in srgb, var(--paper) 63%, transparent); font-size: 0.65rem; line-height: 1.25; }
 .signal-pins li span { color: var(--warm); font-family: "SFMono-Regular", Consolas, monospace; }
 .signal-pins li.is-passed { color: var(--paper); }
-.signal-pins li.is-passed span { color: var(--success); }
+.signal-pins li.is-passed span { color: #9bc8aa; }
 .signal-foot { margin: auto 0 0; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--paper) 30%, transparent); color: color-mix(in srgb, var(--paper) 68%, transparent); font-size: 0.65rem; line-height: 1.4; }
 
 .analysis-panel,
@@ -464,11 +464,30 @@ h2 {
 .practice-heading h2 { max-width: 13ch; }
 .practice-heading > p:last-child { max-width: 34ch; margin: 22px 0 0; color: var(--muted); font-size: 0.98rem; line-height: 1.55; }
 
+.practice-switch { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 25px; }
+.practice-switch button {
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background-color 160ms var(--ease-out, ease-out), border-color 160ms var(--ease-out, ease-out), color 160ms var(--ease-out, ease-out), transform 160ms var(--ease-out, ease-out);
+}
+.practice-switch button:hover { border-color: var(--signal); color: var(--ink); }
+.practice-switch button:active { transform: scale(0.97); }
+.practice-switch button.is-active { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+
 .practice-sheet {
   border: 1px solid var(--line-strong);
   background: var(--paper-deep);
   padding: 22px;
   position: relative;
+  transition: border-color 180ms var(--ease-out, ease-out), box-shadow 180ms var(--ease-out, ease-out);
 }
 
 .practice-sheet::after {
@@ -483,6 +502,10 @@ h2 {
   letter-spacing: 0.12em;
   writing-mode: vertical-rl;
 }
+
+.practice-sheet.is-resolved.is-correct { border-color: var(--success); box-shadow: inset 4px 0 0 var(--success); }
+.practice-sheet.is-resolved.is-incorrect { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.blueprint-sheet::after { content: "BLUEPRINT / 02"; }
 
 .practice-sheet-head {
   display: flex;
@@ -503,7 +526,7 @@ h2 {
 .practice-detail { max-width: 50ch; color: var(--muted); font-size: 0.9rem; line-height: 1.48; }
 
 .practice-options { display: grid; gap: 8px; margin-top: 24px; }
-.practice-options button {
+.practice-options .practice-option {
   display: grid;
   grid-template-columns: 27px 1fr;
   align-items: center;
@@ -520,12 +543,12 @@ h2 {
   text-align: left;
   transition: border-color 150ms var(--ease-out, ease-out), background-color 150ms var(--ease-out, ease-out), color 150ms var(--ease-out, ease-out), transform 150ms var(--ease-out, ease-out);
 }
-.practice-options button:hover { border-color: var(--signal); }
-.practice-options button:active { transform: scale(0.985); }
-.practice-options button > span { color: var(--accent); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.75rem; font-weight: 800; }
-.practice-options button.is-correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 12%, var(--paper)); }
-.practice-options button.is-correct > span { color: var(--success); }
-.practice-options button.is-incorrect { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--paper)); }
+.practice-options .practice-option:hover { border-color: var(--signal); }
+.practice-options .practice-option:active { transform: scale(0.985); }
+.practice-options .practice-option > span { color: var(--accent); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.75rem; font-weight: 800; }
+.practice-options .practice-option.is-correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 12%, var(--paper)); animation: practice-resolve 260ms var(--ease-out, ease-out) both; }
+.practice-options .practice-option.is-correct > span { color: var(--success); }
+.practice-options .practice-option.is-incorrect { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--paper)); animation: practice-resolve 260ms var(--ease-out, ease-out) both; }
 
 .practice-feedback {
   display: flex;
@@ -539,6 +562,11 @@ h2 {
 }
 .practice-feedback p { max-width: 46ch; margin: 0; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
 .practice-feedback .plain-button { flex: 0 0 auto; }
+
+@keyframes practice-resolve {
+  from { opacity: 0.55; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
 .method-section { display: grid; grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr); gap: 60px; padding: 44px 0; }
 .method-copy { color: var(--muted); font-size: 1rem; line-height: 1.55; }
@@ -614,4 +642,6 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+  .practice-options .practice-option.is-correct,
+  .practice-options .practice-option.is-incorrect { animation: none; }
 }
