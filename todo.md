@@ -5,3 +5,4 @@
 - [ ] Verify GitHub and Vercel publishing connections.
 - [ ] Create and publish the public GitHub repository named tight-secure.
 - [ ] Deploy Password Atlas to Vercel and confirm the live URL.
+- [x] Configure Vercel to publish the Vite client output from `dist/public` rather than expose the bundled Express entry file; validated by regression test, type check, and production build.
