@@ -98,6 +98,8 @@ export default function Home() {
   const hasPassword = password.length > 0;
   const tone = scoreTone(result.score);
   const filledSegments = Math.ceil(result.score / 10);
+  const passedChecks = result.checks.filter(check => check.pass).length;
+  const activeSignalBars = hasPassword ? Math.max(2, Math.min(12, Math.ceil(result.score / 8.34))) : 2;
   const missingChecks = result.checks.filter(check => !check.pass).map(check => check.label.toLowerCase());
 
   const commandOutput = useMemo(() => {
@@ -136,9 +138,15 @@ export default function Home() {
   };
 
   return (
-    <div className="secure-page">
+    <div className={`secure-page tone-${tone} ${hasPassword ? "has-reading" : "is-waiting"}`}>
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Tight Secure home">TIGHT SECURE</a>
+        <nav className="primary-nav" aria-label="Primary navigation">
+          <a href="#checker">Checker</a>
+          <a href="#method">Method</a>
+          <a href="#about">About</a>
+          <a href="#support">Support</a>
+        </nav>
         <div className="header-actions">
           <span className="local-mark">Local check</span>
           <div className="appearance-control" role="group" aria-label="Color mode">
@@ -159,12 +167,36 @@ export default function Home() {
 
       <main id="top" className="workbench">
         <section className="intro" aria-labelledby="page-title">
-          <p className="eyebrow">Password check / 01</p>
-          <h1 id="page-title">Check a password before it becomes a problem.</h1>
-          <p className="intro-copy">Tight Secure reads common patterns on this device. It does not submit, save, or validate the password you enter.</p>
+          <div className="intro-text">
+            <p className="eyebrow">Password check / 01</p>
+            <h1 id="page-title">Check a password before it becomes a problem.</h1>
+            <p className="intro-copy">Tight Secure reads common patterns on this device. It does not submit, save, or validate the password you enter.</p>
+            <p className="intro-stamp"><span>On-device reading</span><span>Zero handoff</span><span>Built for daily use</span></p>
+          </div>
+          <aside className="signal-rail" aria-label="Local security signal">
+            <div className="signal-rail-head">
+              <span>Integrity signal</span>
+              <strong>{hasPassword ? "Live" : "Standby"}</strong>
+            </div>
+            <div className="signal-window" aria-hidden="true">
+              <div className="signal-bars">
+                {Array.from({ length: 12 }, (_, index) => <i className={index < activeSignalBars ? "is-active" : ""} key={index} />)}
+              </div>
+              <div className="signal-axis"><span>0</span><span>50</span><span>100</span></div>
+            </div>
+            <div className="signal-readout">
+              <div><span>Read</span><strong>{hasPassword ? `${result.score}/100` : "—"}</strong></div>
+              <div><span>Checks</span><strong>{hasPassword ? `${passedChecks}/5` : "—"}</strong></div>
+              <div><span>Target</span><strong>{activeContext.threshold}+</strong></div>
+            </div>
+            <ol className="signal-pins" aria-label="Security checks">
+              {result.checks.map((check, index) => <li className={check.pass ? "is-passed" : ""} key={check.label}><span>{String(index + 1).padStart(2, "0")}</span>{check.label}</li>)}
+            </ol>
+            <p className="signal-foot">The signal updates in this browser. Your password remains withheld.</p>
+          </aside>
         </section>
 
-        <section className="analysis-panel" aria-labelledby="analysis-title">
+        <section id="checker" className="analysis-panel" aria-labelledby="analysis-title">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Input</p>
@@ -273,7 +305,7 @@ export default function Home() {
           <pre className="command-output" aria-live="polite">{commandOutput.join("\n")}</pre>
         </section>
 
-        <section className="method-section" aria-labelledby="method-title">
+        <section id="method" className="method-section" aria-labelledby="method-title">
           <div>
             <p className="eyebrow">How to use the result</p>
             <h2 id="method-title">Prefer length, uniqueness, and a password manager.</h2>
@@ -284,24 +316,52 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="about" className="about-section" aria-labelledby="about-title">
+          <div className="about-lead">
+            <p className="eyebrow">About Tight Secure</p>
+            <h2 id="about-title">A small tool for making a better decision before you reuse a weak password.</h2>
+          </div>
+          <div className="about-detail">
+            <p>Tight Secure is an independent password-awareness project maintained by <a href="https://github.com/theneotic" target="_blank" rel="noreferrer">theneotic</a>. It is designed as a quick local check, not a password manager, breach monitor, or account service.</p>
+            <dl className="about-ledger">
+              <div><dt>Purpose</dt><dd>Spot common weak patterns before you use a password.</dd></div>
+              <div><dt>Boundary</dt><dd>Passwords are evaluated in the browser and are not sent by this checker.</dd></div>
+              <div><dt>Best use</dt><dd>Pair long, unique passwords with a trusted password manager and multi-factor authentication.</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <section id="support" className="support-section" aria-labelledby="support-title">
+          <div>
+            <p className="eyebrow">Support / feedback</p>
+            <h2 id="support-title">Found a problem or have a suggestion?</h2>
+          </div>
+          <div className="support-action">
+            <p>Use the project’s GitHub issue tracker to report a bug, suggest an improvement, or ask a non-sensitive question. Do not include passwords, recovery codes, or account details.</p>
+            <a className="support-link" href="https://github.com/theneotic/tight-secure/issues" target="_blank" rel="noreferrer">Open Tight Secure support on GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+
         <section className="legal-grid" aria-label="Privacy and terms">
           <article id="privacy">
             <p className="eyebrow">Privacy</p>
             <h2>Your password stays in the browser.</h2>
-            <p>Tight Secure does not collect the text you type into the password field. The optional copy action uses your device clipboard only after you choose it.</p>
+            <p>Tight Secure does not intentionally collect the password text you type into the checker. The local reading, score, and command preview run in your browser. The optional copy action uses your device clipboard only after you choose it.</p>
+            <p>Color-mode preference may be stored on your device so the interface can remember your selection. Do not enter passwords, recovery codes, account identifiers, or other sensitive information into support requests.</p>
           </article>
           <article id="terms">
             <p className="eyebrow">Terms</p>
             <h2>Use the result as guidance.</h2>
-            <p>This tool cannot verify breach history, account settings, or future attack methods. Keep your recovery information private and use multi-factor authentication where available.</p>
+            <p>This tool cannot verify breach history, account settings, malware exposure, or future attack methods. A favorable score is not a security guarantee.</p>
+            <p>You are responsible for choosing, storing, and using your passwords safely. Keep recovery information private and use multi-factor authentication where available.</p>
           </article>
         </section>
       </main>
 
       <footer className="site-footer">
         <span>© 2026 Tight Secure</span>
-        <span>Local password pattern check</span>
-        <span><a href="#privacy">Privacy</a> / <a href="#terms">Terms</a></span>
+        <span>Independent local password pattern check</span>
+        <span><a href="#about">About</a> / <a href="#support">Support</a> / <a href="#privacy">Privacy</a> / <a href="#terms">Terms</a></span>
       </footer>
     </div>
   );

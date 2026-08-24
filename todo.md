@@ -12,3 +12,9 @@
 - [x] Add a dark/light mode control that defaults to the operating system preference, persists an explicit user choice, and follows later system changes only while no choice has been made.
 - [x] Add an interactive command-preview section that explains the local password evaluation in a useful, product-specific way.
 - [x] Review the live Vercel design and validate the responsive color-mode and command-preview interactions.
+- [x] Run a fresh read-only security rescan after the system-theme and command-preview release, and review the current live Vercel design; findings documented in `docs/security-rescan-2026-08-24.md`.
+- [x] Enrich Tight Secure’s visual character and response feedback without reintroducing generic glass, neon, bento-grid, or template-like styling; reviewed at desktop and mobile sizes.
+- [x] Add clear primary navigation linking the local checker, method, about, support, privacy, and terms sections.
+- [x] Add purpose-built About and Support surfaces that explain Tight Secure’s ownership, local-only purpose, and available contact route without inventing testimonials or reviews.
+- [x] Expand Privacy and Terms into readable, accessible policy content and preserve the copyright notice.
+- [ ] Commit and deploy the approved visual enhancement together with the expanded website structure under the user’s GitHub identity.

@@ -17,3 +17,7 @@ The enhancement preview was navigated through its reading and command areas in e
 At 390 × 844, the System, Light, and Dark controls fit on one line beside the Tight Secure wordmark. The header, introduction, password field, actions, and context buttons remain legible and free of horizontal clipping.
 
 The command-preview tabs were verified in the local preview. The Privacy tab updates the transcript to state that input is processed in the browser, no password request or history is created, and clipboard access occurs only after a user selects Copy. The password itself is not rendered in the transcript.
+
+The visual-energy enhancement was reviewed in both desktop and 390 × 844 phone previews. The new integrity-signal rail adds a live on-device readout, check pins, and a disciplined bar display without obscuring the primary password workflow. The phone composition preserves the wordmark, appearance control, editorial heading, assurance stamps, and signal rail without horizontal clipping.
+
+The expanded site structure was reviewed at desktop and 390 × 844 phone sizes. The compact header navigation remains legible, the mobile navigation wraps beneath the identity bar without clipping, and the About anchor was verified to update the page URL to `#about`. About, Support, Privacy, and Terms retain the same editorial layout and clearly state their privacy boundaries.
