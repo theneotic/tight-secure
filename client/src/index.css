@@ -108,6 +108,28 @@ input:focus-visible {
 
 .plain-button:disabled { color: var(--muted); cursor: not-allowed; }
 
+.appearance-control {
+  display: flex;
+  border: 1px solid var(--line);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.appearance-control button {
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+.appearance-control button:last-child { border-right: 0; }
+.appearance-control button.is-active { background: var(--ink); color: var(--paper); }
+
 .workbench {
   width: min(1160px, calc(100% - 40px));
   margin: 0 auto;
@@ -270,6 +292,38 @@ h2 {
 .empty-reading { max-width: 62ch; padding: 28px 0 6px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
 .empty-reading p + p { margin-top: 8px; font-size: 0.9rem; }
 
+.command-section { border-top: 1px solid var(--line); padding: 38px 0 42px; }
+.command-header { display: flex; justify-content: space-between; gap: 40px; align-items: end; }
+.command-header > p { max-width: 33ch; margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
+
+.command-tabs { display: flex; gap: 18px; margin-top: 28px; border-bottom: 1px solid var(--line); }
+.command-tabs button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  margin-bottom: -1px;
+  padding: 0 0 10px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.76rem;
+}
+.command-tabs button.is-active { border-bottom-color: var(--accent); color: var(--ink); font-weight: 800; }
+
+.command-output {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-deep);
+  color: var(--ink);
+  min-height: 184px;
+  overflow-x: auto;
+  padding: 22px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
 .method-section { display: grid; grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr); gap: 60px; padding: 44px 0; }
 .method-copy { color: var(--muted); font-size: 1rem; line-height: 1.55; }
 .method-copy p + p { margin-top: 16px; }
@@ -289,6 +343,8 @@ h2 {
   .workbench { width: min(100% - 28px, 1160px); }
   .site-header { min-height: 64px; }
   .local-mark { display: none; }
+  .header-actions { gap: 0; }
+  .appearance-control button { padding: 6px 7px; }
   .workbench { padding: 48px 0 42px; }
   .intro { margin-bottom: 48px; }
   .panel-heading,
@@ -299,6 +355,7 @@ h2 {
   .result-summary,
   .method-section,
   .legal-grid { grid-template-columns: 1fr; gap: 24px; }
+  .command-header { align-items: start; flex-direction: column; gap: 14px; }
   .check-list { grid-template-columns: 1fr; }
   .legal-grid article { min-height: 0; padding: 28px 0; }
   .legal-grid article + article { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }

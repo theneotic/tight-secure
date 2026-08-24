@@ -9,3 +9,6 @@
 - [x] Run a read-only security audit covering dependency vulnerabilities, secret exposure, deployment configuration, and application security risks; findings documented in `docs/security-audit-2026-08-24.md`.
 - [x] Redesign Tight Secure to replace template-like, AI-generated visual cues with a restrained human-crafted interface, clearer product voice, and original interaction details while retaining local-only analysis.
 - [x] Remove AI-template cues: glass and pastel treatments, dot grids, oversized soft cards, icon clutter, generic headline formulas, decorative arrows/sparkles, empty marketing sections, and excessive hover animation; add clear privacy and terms access instead.
+- [x] Add a dark/light mode control that defaults to the operating system preference, persists an explicit user choice, and follows later system changes only while no choice has been made.
+- [x] Add an interactive command-preview section that explains the local password evaluation in a useful, product-specific way.
+- [x] Review the live Vercel design and validate the responsive color-mode and command-preview interactions.

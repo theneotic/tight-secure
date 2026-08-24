@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { type ThemePreference, useTheme } from "@/contexts/ThemeContext";
 
 type ContextId = "email" | "device" | "social" | "banking" | "work";
+type CommandView = "inspect" | "advice" | "privacy";
 
 const contexts: Array<{ id: ContextId; label: string; threshold: number }> = [
   { id: "email", label: "Email", threshold: 70 },
@@ -86,16 +87,37 @@ function scoreTone(score: number) {
 }
 
 export default function Home() {
-  const { theme, toggleTheme } = useTheme();
+  const { preference, setPreference } = useTheme();
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState(false);
   const [context, setContext] = useState<ContextId>("email");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "unavailable">("idle");
+  const [commandView, setCommandView] = useState<CommandView>("inspect");
   const result = useMemo(() => analysePassword(password), [password]);
   const activeContext = contexts.find(item => item.id === context) ?? contexts[0];
   const hasPassword = password.length > 0;
   const tone = scoreTone(result.score);
   const filledSegments = Math.ceil(result.score / 10);
+  const missingChecks = result.checks.filter(check => !check.pass).map(check => check.label.toLowerCase());
+
+  const commandOutput = useMemo(() => {
+    const target = activeContext.label.toLowerCase();
+    const header = "tightsecure / local mode";
+
+    if (commandView === "privacy") {
+      return [header, "$ privacy --explain", "input: processed in this browser", "network: no password request", "storage: no password history", "clipboard: used only after Copy is selected"];
+    }
+
+    if (!hasPassword) {
+      return [header, `$ ${commandView} --target ${target}`, "status: waiting for local input", "note: the password text will never appear here"];
+    }
+
+    if (commandView === "advice") {
+      return [header, `$ advice --target ${target}`, `target score: ${activeContext.threshold}+`, `current score: ${result.score}`, `next move: ${missingChecks.length ? missingChecks[0] : "keep this password unique"}`, "reminder: use a password manager for storage"];
+    }
+
+    return [header, `$ inspect --target ${target}`, `score: ${result.score}/100 (${result.label.toLowerCase()})`, `length: ${password.length} characters`, `checks met: ${result.checks.filter(check => check.pass).length}/${result.checks.length}`, "password text: withheld locally"];
+  }, [activeContext.label, activeContext.threshold, commandView, hasPassword, missingChecks, password.length, result.checks, result.label, result.score]);
 
   const copyPassword = async () => {
     if (!password) return;
@@ -119,9 +141,19 @@ export default function Home() {
         <a className="wordmark" href="#top" aria-label="Tight Secure home">TIGHT SECURE</a>
         <div className="header-actions">
           <span className="local-mark">Local check</span>
-          <button className="plain-button" type="button" onClick={toggleTheme} aria-label="Switch color mode">
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
+          <div className="appearance-control" role="group" aria-label="Color mode">
+            {(["system", "light", "dark"] as ThemePreference[]).map(mode => (
+              <button
+                type="button"
+                key={mode}
+                className={preference === mode ? "is-active" : ""}
+                onClick={() => setPreference?.(mode)}
+                aria-pressed={preference === mode}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -214,6 +246,31 @@ export default function Home() {
               <p>This is a teaching tool, not a password manager or breach monitor.</p>
             </div>
           )}
+        </section>
+
+        <section className="command-section" aria-labelledby="command-title">
+          <div className="command-header">
+            <div>
+              <p className="eyebrow">Local command preview</p>
+              <h2 id="command-title">See what the check is reading.</h2>
+            </div>
+            <p>This is a transcript of local metadata. It never prints the password itself.</p>
+          </div>
+          <div className="command-tabs" role="tablist" aria-label="Command preview options">
+            {(["inspect", "advice", "privacy"] as CommandView[]).map(view => (
+              <button
+                type="button"
+                role="tab"
+                key={view}
+                aria-selected={commandView === view}
+                className={commandView === view ? "is-active" : ""}
+                onClick={() => setCommandView(view)}
+              >
+                {view}
+              </button>
+            ))}
+          </div>
+          <pre className="command-output" aria-live="polite">{commandOutput.join("\n")}</pre>
         </section>
 
         <section className="method-section" aria-labelledby="method-title">
