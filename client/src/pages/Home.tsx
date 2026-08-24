@@ -4,6 +4,14 @@ import { type ThemePreference, useTheme } from "@/contexts/ThemeContext";
 type ContextId = "email" | "device" | "social" | "banking" | "work";
 type CommandView = "inspect" | "advice" | "privacy";
 
+type PracticeScenario = {
+  prompt: string;
+  detail: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+};
+
 const contexts: Array<{ id: ContextId; label: string; threshold: number }> = [
   { id: "email", label: "Email", threshold: 70 },
   { id: "device", label: "Device", threshold: 78 },
@@ -25,6 +33,30 @@ const commonPasswords = [
   "admin",
   "welcome",
   "abc123",
+];
+
+export const practiceScenarios: PracticeScenario[] = [
+  {
+    prompt: "A shopping site asks you to reuse your email password so it is easier to remember.",
+    detail: "The account only stores purchase history and an address, so it feels low risk.",
+    options: ["Reuse the email password", "Create a new unique password", "Use a shorter version of the email password"],
+    answer: 1,
+    explanation: "A separate password limits the damage if one service is breached. A password manager removes the need to remember every unique password.",
+  },
+  {
+    prompt: "A message says your account is locked and asks you to reply with a recovery code.",
+    detail: "The message uses a familiar logo but arrives through an unexpected chat.",
+    options: ["Reply with the code", "Open the official site or app yourself", "Send a screenshot of the recovery page"],
+    answer: 1,
+    explanation: "Recovery codes are credentials. Do not send them in chat or email; start from the official app or a bookmarked site instead.",
+  },
+  {
+    prompt: "You need a fresh password for a work service you will use every day.",
+    detail: "You want it to be strong without creating another hard-to-remember secret.",
+    options: ["Use a password-manager-generated passphrase", "Add a year to an old password", "Choose a familiar word with an exclamation mark"],
+    answer: 0,
+    explanation: "A password manager can create and store a long, unique password. Multi-factor authentication adds another useful layer when available.",
+  },
 ];
 
 export function analysePassword(password: string) {
@@ -93,8 +125,13 @@ export default function Home() {
   const [context, setContext] = useState<ContextId>("email");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "unavailable">("idle");
   const [commandView, setCommandView] = useState<CommandView>("inspect");
+  const [practiceIndex, setPracticeIndex] = useState(0);
+  const [practiceChoice, setPracticeChoice] = useState<number | null>(null);
   const result = useMemo(() => analysePassword(password), [password]);
   const activeContext = contexts.find(item => item.id === context) ?? contexts[0];
+  const activePractice = practiceScenarios[practiceIndex];
+  const practiceComplete = practiceChoice !== null;
+  const practiceCorrect = practiceChoice === activePractice.answer;
   const hasPassword = password.length > 0;
   const tone = scoreTone(result.score);
   const filledSegments = Math.ceil(result.score / 10);
@@ -144,6 +181,7 @@ export default function Home() {
         <nav className="primary-nav" aria-label="Primary navigation">
           <a href="#checker">Checker</a>
           <a href="#method">Method</a>
+          <a href="#practice">Practice</a>
           <a href="#about">About</a>
           <a href="#support">Support</a>
         </nav>
@@ -303,6 +341,52 @@ export default function Home() {
             ))}
           </div>
           <pre className="command-output" aria-live="polite">{commandOutput.join("\n")}</pre>
+        </section>
+
+        <section id="practice" className="practice-section" aria-labelledby="practice-title">
+          <div className="practice-heading">
+            <p className="eyebrow">Security judgment drill</p>
+            <h2 id="practice-title">Practice the decision, not a real password.</h2>
+            <p>Three small situations. No sign-in, no score history, and no personal information required.</p>
+          </div>
+          <div className="practice-sheet">
+            <div className="practice-sheet-head">
+              <span>Scenario {String(practiceIndex + 1).padStart(2, "0")} / {String(practiceScenarios.length).padStart(2, "0")}</span>
+              <span>{practiceComplete ? (practiceCorrect ? "Good call" : "Try the reasoning") : "Choose a next move"}</span>
+            </div>
+            <p className="practice-prompt">{activePractice.prompt}</p>
+            <p className="practice-detail">{activePractice.detail}</p>
+            <div className="practice-options" role="group" aria-label="Choose the safer response">
+              {activePractice.options.map((option, index) => {
+                const state = !practiceComplete ? "" : index === activePractice.answer ? "is-correct" : index === practiceChoice ? "is-incorrect" : "";
+                return (
+                  <button
+                    type="button"
+                    className={state}
+                    key={option}
+                    onClick={() => setPracticeChoice(index)}
+                    aria-pressed={practiceChoice === index}
+                  >
+                    <span>{String.fromCharCode(65 + index)}</span>{option}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="practice-feedback" aria-live="polite">
+              {practiceComplete ? <p>{activePractice.explanation}</p> : <p>Pick the response that reduces risk without sharing a credential.</p>}
+              <button
+                type="button"
+                className="plain-button"
+                disabled={!practiceComplete}
+                onClick={() => {
+                  setPracticeIndex(index => (index + 1) % practiceScenarios.length);
+                  setPracticeChoice(null);
+                }}
+              >
+                {practiceIndex === practiceScenarios.length - 1 ? "Restart drill" : "Next scenario"}
+              </button>
+            </div>
+          </div>
         </section>
 
         <section id="method" className="method-section" aria-labelledby="method-title">

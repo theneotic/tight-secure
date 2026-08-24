@@ -17,4 +17,6 @@
 - [x] Add clear primary navigation linking the local checker, method, about, support, privacy, and terms sections.
 - [x] Add purpose-built About and Support surfaces that explain Tight Secure’s ownership, local-only purpose, and available contact route without inventing testimonials or reviews.
 - [x] Expand Privacy and Terms into readable, accessible policy content and preserve the copyright notice.
-- [ ] Commit and deploy the approved visual enhancement together with the expanded website structure under the user’s GitHub identity.
+- [x] Commit and deploy the approved visual enhancement together with the expanded website structure under the user’s GitHub identity; Vercel client asset verified after deployment.
+- [x] Add a privacy-safe interactive engagement feature that helps visitors practice password-security judgment without entering real personal data.
+- [x] Review the current live Vercel design and validate the new engagement feature across desktop and mobile layouts.
