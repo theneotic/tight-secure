@@ -6,3 +6,6 @@
 - [ ] Create and publish the public GitHub repository named tight-secure.
 - [ ] Deploy Password Atlas to Vercel and confirm the live URL.
 - [x] Configure Vercel to publish the Vite client output from `dist/public` rather than expose the bundled Express entry file; validated by regression test, type check, and production build.
+- [x] Run a read-only security audit covering dependency vulnerabilities, secret exposure, deployment configuration, and application security risks; findings documented in `docs/security-audit-2026-08-24.md`.
+- [x] Redesign Tight Secure to replace template-like, AI-generated visual cues with a restrained human-crafted interface, clearer product voice, and original interaction details while retaining local-only analysis.
+- [x] Remove AI-template cues: glass and pastel treatments, dot grids, oversized soft cards, icon clutter, generic headline formulas, decorative arrows/sparkles, empty marketing sections, and excessive hover animation; add clear privacy and terms access instead.
