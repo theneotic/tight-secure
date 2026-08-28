@@ -1,5 +1,23 @@
-[README.md](https://github.com/user-attachments/files/31380599/README.md)
-# Password Atlas
+# Tight Secure
+
+> **A privacy-focused password-intelligence workspace for understanding predictable patterns and building stronger credentials locally.**
+
+| Project lens | Details |
+| --- | --- |
+| **Type** | Web application |
+| **Stack** | TypeScript · React · Vite |
+| **Status** | Actively maintained |
+
+## Overview
+
+A privacy-focused password-intelligence workspace for understanding predictable patterns and building stronger credentials locally. This README keeps the project’s verified setup, usage, privacy, and implementation notes together in one place.
+
+## Repository Snapshot
+
+The top-level workspace currently includes `LICENSE`, `README.md`, `client/`, `components.json`, `docs/`, `ideas.md`, `package.json`, `patches/`, `pnpm-lock.yaml`, `server/`, `shared/`, `template.json`. Review the project-specific sections below before installing dependencies, supplying configuration values, or running a build.
+
+
+---
 
 Password Atlas is a client-side password intelligence dashboard. It helps people read password strength in context, spot common weak patterns, compare the score against the importance of the protected account, and generate a stronger passphrase.
 
